@@ -18,7 +18,10 @@ defaults:
     values: {lang: ru, description: "Замеренный шаблон Lima для Docker на Mac с Apple Silicon: 0 записи на диск и ~1% CPU в простое, вдвое меньше RAM после нагрузки."}
   - scope: {path: "docs/ru"}
     values: {lang: ru}
+# Upstream primer takes <html lang> from page.lang; the built-in Pages copy only reads site.lang.
+remote_theme: pages-themes/primer@v0.6.0
 plugins:
+  - jekyll-remote-theme
   - jekyll-titles-from-headings
   - jekyll-seo-tag
   - jekyll-relative-links
