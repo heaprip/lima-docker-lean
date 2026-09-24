@@ -304,7 +304,7 @@ docker context create lima-dev --docker "host=unix://$HOME/.lima/dev/sock/docker
 ./bench/memtest.sh dev            # real RAM cost after load (stops the VM, applies host memory pressure)
 ```
 
-The raw outputs of the runs quoted above are in [`results/`](../../results/).
+The raw outputs of the runs quoted above are in [`results/`](../../results/README.md).
 
 [#4220]: https://github.com/lima-vm/lima/issues/4220
 [#2789]: https://github.com/lima-vm/lima/issues/2789

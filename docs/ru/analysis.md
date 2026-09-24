@@ -304,7 +304,7 @@ docker context create lima-dev --docker "host=unix://$HOME/.lima/dev/sock/docker
 ./bench/memtest.sh dev            # реальная цена RAM после нагрузки (останавливает VM, давит на память хоста)
 ```
 
-Сырые выводы всех упомянутых прогонов лежат в [`results/`](../../results/).
+Сырые выводы всех упомянутых прогонов лежат в [`results/`](../../results/README.md).
 
 [#4220]: https://github.com/lima-vm/lima/issues/4220
 [#2789]: https://github.com/lima-vm/lima/issues/2789
