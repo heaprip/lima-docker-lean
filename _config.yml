@@ -19,7 +19,7 @@ defaults:
   - scope: {path: "docs/ru"}
     values: {lang: ru}
 # Upstream primer takes <html lang> from page.lang; the built-in Pages copy only reads site.lang.
-remote_theme: pages-themes/primer@v0.6.0
+remote_theme: pages-themes/primer@be021deb4cbcd32763a42a8826c34ce60f1c58a1
 plugins:
   - jekyll-remote-theme
   - jekyll-titles-from-headings
