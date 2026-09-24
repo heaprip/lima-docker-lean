@@ -1,0 +1,317 @@
+ 10:      16594      15943      15959      14593    GICv3  27 Level     arch_timer
+ 21:          0          0          0          0 GICv2m-PCI-MSIX-0000:00:05.0   0 Edge      virtio1-config
+ 22:          0          0          0          0 GICv2m-PCI-MSIX-0000:00:05.0   1 Edge      virtio1-input
+ 23:        265          0          0          0 GICv2m-PCI-MSIX-0000:00:05.0   2 Edge      virtio1-output
+ 30:          0          0          0          0 GICv2m-PCI-MSIX-0000:00:0a.0   0 Edge      virtio6-config
+ 31:         21          0          0          0 GICv2m-PCI-MSIX-0000:00:0a.0   1 Edge      virtio6-input
+ 32:          0          0          0          0 GICv2m-PCI-MSIX-0000:00:08.0   0 Edge      virtio4-config
+ 33:          0          0          0          0 GICv2m-PCI-MSIX-0000:00:08.0   1 Edge      virtio4-hiprio
+ 34:         16          0          0          0 GICv2m-PCI-MSIX-0000:00:08.0   2 Edge      virtio4-requests.0
+ 35:          0          0          0          0 GICv2m-PCI-MSIX-0000:00:06.0   0 Edge      virtio2-config
+ 36:       1194          0          0          0 GICv2m-PCI-MSIX-0000:00:06.0   1 Edge      virtio2-req.0
+ 37:          0          0          0          0 GICv2m-PCI-MSIX-0000:00:07.0   0 Edge      virtio3-config
+ 38:        138          0          0          0 GICv2m-PCI-MSIX-0000:00:07.0   1 Edge      virtio3-req.0
+ 39:          0          0          0          0 GICv2m-PCI-MSIX-0000:00:01.0   0 Edge      virtio0-config
+ 40:        200          0          0          0 GICv2m-PCI-MSIX-0000:00:01.0   1 Edge      virtio0-input.0
+ 41:        165          0          0          0 GICv2m-PCI-MSIX-0000:00:01.0   2 Edge      virtio0-output.0
+ 42:          0          0          0          0 GICv2m-PCI-MSIX-0000:00:0b.0   0 Edge      virtio7-config
+ 43:          0          0          0          0 GICv2m-PCI-MSIX-0000:00:0b.0   1 Edge      virtio7-inflate
+ 44:          0          0          0          0 GICv2m-PCI-MSIX-0000:00:0b.0   2 Edge      virtio7-deflate
+ 46:          0          0          0          0 GICv2m-PCI-MSIX-0000:00:09.0   0 Edge      virtio5-config
+ 47:        117          0          0          0 GICv2m-PCI-MSIX-0000:00:09.0   1 Edge      virtio5-rx
+ 48:        229          0          0          0 GICv2m-PCI-MSIX-0000:00:09.0   2 Edge      virtio5-tx
+ 49:          0          0          0          0 GICv2m-PCI-MSIX-0000:00:09.0   3 Edge      virtio5-event
+IPI0:      1360       1198       1145       1276       Rescheduling interrupts
+IPI1:      7448       7790       6174       6613       Function call interrupts
+IPI2:         0          0          0          0       CPU stop interrupts
+IPI3:         0          0          0          0       CPU stop NMIs
+IPI4:         0          0          0          0       Timer broadcast interrupts
+IPI5:         2          0          0          0       IRQ work interrupts
+IPI6:         0          0          0          0       CPU backtrace interrupts
+IPI7:         0          0          0          0       KGDB roundup interrupts
+@@
+/proc/1/task/1|init|318
+/proc/10/task/10|kworker/0:0H-events_highpri|4
+/proc/1019/task/1019|kworker/3:2-events|54
+/proc/1048/task/1048|scsi_eh_0|2
+/proc/1049/task/1049|kworker/R-scsi_tmf_0|2
+/proc/1051/task/1051|usb-storage|1529
+/proc/1056/task/1056|kworker/R-uas|2
+/proc/11/task/11|kworker/0:1-events|325
+/proc/12/task/12|kworker/u16:0-events_unbound|1434
+/proc/13/task/13|kworker/R-mm_percpu_wq|2
+/proc/14/task/14|kworker/u16:1-events_unbound|2654
+/proc/15/task/15|ksoftirqd/0|307
+/proc/154/task/154|khvcd|12
+/proc/16/task/16|rcu_preempt|1147
+/proc/1679/task/1679|udevd|251
+/proc/17/task/17|rcu_exp_par_gp_kthread_worker/0|2
+/proc/1766/task/1766|irq/45-ACPI:Event|2
+/proc/18/task/18|rcu_exp_gp_kthread_worker|14
+/proc/182/task/182|kworker/R-mld|2
+/proc/183/task/183|kworker/R-ipv6_addrconf|2
+/proc/184/task/184|kworker/1:1H-kblockd|92
+/proc/185/task/185|kworker/R-kstrp|2
+/proc/19/task/19|migration/0|156
+/proc/2/task/2|kthreadd|79
+/proc/20/task/20|cpuhp/0|11
+/proc/21/task/21|cpuhp/1|11
+/proc/2165/task/2165|udhcpc|1
+/proc/22/task/22|migration/1|166
+/proc/23/task/23|ksoftirqd/1|211
+/proc/2353/task/2353|acpid|2
+/proc/25/task/25|kworker/1:0H-events_highpri|4
+/proc/26/task/26|cpuhp/2|11
+/proc/27/task/27|migration/2|160
+/proc/28/task/28|ksoftirqd/2|198
+/proc/3/task/3|pool_workqueue_release|4
+/proc/30/task/30|kworker/2:0H-events_highpri|4
+/proc/31/task/31|cpuhp/3|11
+/proc/32/task/32|migration/3|162
+/proc/33/task/33|ksoftirqd/3|230
+/proc/3392/task/3392|jbd2/vda1-8|18
+/proc/3393/task/3393|kworker/R-ext4-rsv-conversion|2
+/proc/34/task/34|kworker/3:0-events|420
+/proc/35/task/35|kworker/3:0H-events_highpri|4
+/proc/36/task/36|kdevtmpfs|147
+/proc/3612/task/3612|rosettad|13
+/proc/37/task/37|kworker/R-inet_frag_wq|2
+/proc/3710/task/3710|supervise-daemo|1
+/proc/3711/task/3711|lima-guestagent|4
+/proc/3711/task/3718|lima-guestagent|7996
+/proc/3711/task/3719|lima-guestagent|1145
+/proc/3711/task/3720|lima-guestagent|3
+/proc/3711/task/3721|lima-guestagent|920
+/proc/3711/task/3728|lima-guestagent|2
+/proc/3711/task/3732|lima-guestagent|1306
+/proc/3711/task/3733|lima-guestagent|444
+/proc/3711/task/3734|lima-guestagent|1101
+/proc/3711/task/4249|lima-guestagent|768
+/proc/3711/task/4312|lima-guestagent|480
+/proc/38/task/38|rcu_tasks_kthread|2
+/proc/3813/task/3813|supervise-daemo|1
+/proc/3814/task/3814|dockerd|658
+/proc/3814/task/3822|dockerd|731
+/proc/3814/task/3823|dockerd|51
+/proc/3814/task/3824|dockerd|65
+/proc/3814/task/3825|dockerd|31
+/proc/3814/task/3826|dockerd|4
+/proc/3814/task/3836|dockerd|367
+/proc/3814/task/3859|dockerd|157
+/proc/3814/task/3875|dockerd|384
+/proc/3814/task/3876|dockerd|434
+/proc/3814/task/3917|dockerd|396
+/proc/3858/task/3858|containerd|47
+/proc/3858/task/3860|containerd|4750
+/proc/3858/task/3861|containerd|1911
+/proc/3858/task/3862|containerd|25
+/proc/3858/task/3863|containerd|1205
+/proc/3858/task/3864|containerd|15
+/proc/3858/task/3865|containerd|1
+/proc/3858/task/3866|containerd|1382
+/proc/3858/task/3867|containerd|868
+/proc/39/task/39|rcu_tasks_trace_kthread|2
+/proc/3909/task/3909|syslogd|32
+/proc/393/task/393|kworker/u17:0|2
+/proc/395/task/395|kworker/0:1H-kblockd|113
+/proc/4/task/4|kworker/R-rcu_gp|2
+/proc/40/task/40|kauditd|2
+/proc/4043/task/4043|sshd.pam|15
+/proc/41/task/41|khungtaskd|6
+/proc/4120/task/4120|getty|14
+/proc/4121/task/4121|getty|18
+/proc/4123/task/4123|getty|10
+/proc/4125/task/4125|getty|7
+/proc/4126/task/4126|getty|17
+/proc/4128/task/4128|getty|17
+/proc/4129/task/4129|getty|6
+/proc/4130/task/4130|getty|3
+/proc/42/task/42|oom_reaper|2
+/proc/4218/task/4218|sshd-session.pa|14
+/proc/4221/task/4221|sshd-session.pa|85
+/proc/43/task/43|kworker/R-writeback|2
+/proc/44/task/44|kcompactd0|1091
+/proc/448/task/448|kworker/2:2|3
+/proc/45/task/45|ksmd|2
+/proc/455/task/455|kworker/3:1H-kblockd|37
+/proc/46/task/46|khugepaged|87
+/proc/47/task/47|kworker/R-kblockd|2
+/proc/48/task/48|kworker/R-blkcg_punt_bio|2
+/proc/4842/task/4842|sudo|3
+/proc/4843/task/4843|sh|223
+/proc/49/task/49|kworker/R-kintegrityd|2
+/proc/5/task/5|kworker/R-sync_wq|2
+/proc/50/task/50|kworker/1:1-mm_percpu_wq|229
+/proc/51/task/51|kworker/2:1-events|450
+/proc/52/task/52|kworker/R-md_bitmap|2
+/proc/53/task/53|kworker/R-quota_events_unbound|2
+/proc/54/task/54|kworker/2:1H-kblockd|35
+/proc/55/task/55|kworker/u16:2-events_unbound|2052
+/proc/59/task/59|kworker/u16:3-events_unbound|27
+/proc/6/task/6|kworker/R-kvfree_rcu_reclaim|2
+/proc/7/task/7|kworker/R-slub_flushwq|2
+/proc/72/task/72|kswapd0|3
+/proc/734/task/734|kworker/0:2-events|933
+/proc/75/task/75|kworker/R-kthrotld|2
+/proc/754/task/754|hwrng|21
+/proc/789/task/789|kworker/1:2-events|343
+/proc/8/task/8|kworker/R-netns|2
+####
+ 10:      17200      16839      16893      15219    GICv3  27 Level     arch_timer
+ 21:          0          0          0          0 GICv2m-PCI-MSIX-0000:00:05.0   0 Edge      virtio1-config
+ 22:          0          0          0          0 GICv2m-PCI-MSIX-0000:00:05.0   1 Edge      virtio1-input
+ 23:        265          0          0          0 GICv2m-PCI-MSIX-0000:00:05.0   2 Edge      virtio1-output
+ 30:          0          0          0          0 GICv2m-PCI-MSIX-0000:00:0a.0   0 Edge      virtio6-config
+ 31:         22          0          0          0 GICv2m-PCI-MSIX-0000:00:0a.0   1 Edge      virtio6-input
+ 32:          0          0          0          0 GICv2m-PCI-MSIX-0000:00:08.0   0 Edge      virtio4-config
+ 33:          0          0          0          0 GICv2m-PCI-MSIX-0000:00:08.0   1 Edge      virtio4-hiprio
+ 34:         16          0          0          0 GICv2m-PCI-MSIX-0000:00:08.0   2 Edge      virtio4-requests.0
+ 35:          0          0          0          0 GICv2m-PCI-MSIX-0000:00:06.0   0 Edge      virtio2-config
+ 36:       1199          0          0          0 GICv2m-PCI-MSIX-0000:00:06.0   1 Edge      virtio2-req.0
+ 37:          0          0          0          0 GICv2m-PCI-MSIX-0000:00:07.0   0 Edge      virtio3-config
+ 38:        138          0          0          0 GICv2m-PCI-MSIX-0000:00:07.0   1 Edge      virtio3-req.0
+ 39:          0          0          0          0 GICv2m-PCI-MSIX-0000:00:01.0   0 Edge      virtio0-config
+ 40:        200          0          0          0 GICv2m-PCI-MSIX-0000:00:01.0   1 Edge      virtio0-input.0
+ 41:        165          0          0          0 GICv2m-PCI-MSIX-0000:00:01.0   2 Edge      virtio0-output.0
+ 42:          0          0          0          0 GICv2m-PCI-MSIX-0000:00:0b.0   0 Edge      virtio7-config
+ 43:          0          0          0          0 GICv2m-PCI-MSIX-0000:00:0b.0   1 Edge      virtio7-inflate
+ 44:          0          0          0          0 GICv2m-PCI-MSIX-0000:00:0b.0   2 Edge      virtio7-deflate
+ 46:          0          0          0          0 GICv2m-PCI-MSIX-0000:00:09.0   0 Edge      virtio5-config
+ 47:        123          0          0          0 GICv2m-PCI-MSIX-0000:00:09.0   1 Edge      virtio5-rx
+ 48:        241          0          0          0 GICv2m-PCI-MSIX-0000:00:09.0   2 Edge      virtio5-tx
+ 49:          0          0          0          0 GICv2m-PCI-MSIX-0000:00:09.0   3 Edge      virtio5-event
+IPI0:      1486       1297       1191       1386       Rescheduling interrupts
+IPI1:      7869       8014       6389       6782       Function call interrupts
+IPI2:         0          0          0          0       CPU stop interrupts
+IPI3:         0          0          0          0       CPU stop NMIs
+IPI4:         0          0          0          0       Timer broadcast interrupts
+IPI5:         2          0          0          0       IRQ work interrupts
+IPI6:         0          0          0          0       CPU backtrace interrupts
+IPI7:         0          0          0          0       KGDB roundup interrupts
+@@
+/proc/1/task/1|init|318
+/proc/10/task/10|kworker/0:0H-events_highpri|4
+/proc/1019/task/1019|kworker/3:2-events|54
+/proc/1048/task/1048|scsi_eh_0|2
+/proc/1049/task/1049|kworker/R-scsi_tmf_0|2
+/proc/1051/task/1051|usb-storage|1529
+/proc/1056/task/1056|kworker/R-uas|2
+/proc/11/task/11|kworker/0:1-events|325
+/proc/12/task/12|kworker/u16:0-events_unbound|1601
+/proc/13/task/13|kworker/R-mm_percpu_wq|2
+/proc/14/task/14|kworker/u16:1-events_unbound|2791
+/proc/15/task/15|ksoftirqd/0|317
+/proc/154/task/154|khvcd|12
+/proc/16/task/16|rcu_preempt|1186
+/proc/1679/task/1679|udevd|251
+/proc/17/task/17|rcu_exp_par_gp_kthread_worker/0|2
+/proc/1766/task/1766|irq/45-ACPI:Event|2
+/proc/18/task/18|rcu_exp_gp_kthread_worker|14
+/proc/182/task/182|kworker/R-mld|2
+/proc/183/task/183|kworker/R-ipv6_addrconf|2
+/proc/184/task/184|kworker/1:1H-kblockd|92
+/proc/185/task/185|kworker/R-kstrp|2
+/proc/19/task/19|migration/0|165
+/proc/2/task/2|kthreadd|79
+/proc/20/task/20|cpuhp/0|11
+/proc/21/task/21|cpuhp/1|11
+/proc/2165/task/2165|udhcpc|1
+/proc/22/task/22|migration/1|175
+/proc/23/task/23|ksoftirqd/1|227
+/proc/2353/task/2353|acpid|2
+/proc/25/task/25|kworker/1:0H-events_highpri|4
+/proc/26/task/26|cpuhp/2|11
+/proc/27/task/27|migration/2|168
+/proc/28/task/28|ksoftirqd/2|205
+/proc/3/task/3|pool_workqueue_release|4
+/proc/30/task/30|kworker/2:0H-events_highpri|4
+/proc/31/task/31|cpuhp/3|11
+/proc/32/task/32|migration/3|171
+/proc/33/task/33|ksoftirqd/3|240
+/proc/3392/task/3392|jbd2/vda1-8|22
+/proc/3393/task/3393|kworker/R-ext4-rsv-conversion|2
+/proc/34/task/34|kworker/3:0-mm_percpu_wq|441
+/proc/35/task/35|kworker/3:0H-events_highpri|4
+/proc/36/task/36|kdevtmpfs|147
+/proc/3612/task/3612|rosettad|13
+/proc/37/task/37|kworker/R-inet_frag_wq|2
+/proc/3710/task/3710|supervise-daemo|1
+/proc/3711/task/3711|lima-guestagent|4
+/proc/3711/task/3718|lima-guestagent|8422
+/proc/3711/task/3719|lima-guestagent|1200
+/proc/3711/task/3720|lima-guestagent|3
+/proc/3711/task/3721|lima-guestagent|920
+/proc/3711/task/3728|lima-guestagent|2
+/proc/3711/task/3732|lima-guestagent|1359
+/proc/3711/task/3733|lima-guestagent|444
+/proc/3711/task/3734|lima-guestagent|1161
+/proc/3711/task/4249|lima-guestagent|825
+/proc/3711/task/4312|lima-guestagent|499
+/proc/38/task/38|rcu_tasks_kthread|2
+/proc/3813/task/3813|supervise-daemo|1
+/proc/3814/task/3814|dockerd|658
+/proc/3814/task/3822|dockerd|743
+/proc/3814/task/3823|dockerd|51
+/proc/3814/task/3824|dockerd|65
+/proc/3814/task/3825|dockerd|31
+/proc/3814/task/3826|dockerd|4
+/proc/3814/task/3836|dockerd|367
+/proc/3814/task/3859|dockerd|163
+/proc/3814/task/3875|dockerd|384
+/proc/3814/task/3876|dockerd|440
+/proc/3814/task/3917|dockerd|402
+/proc/3858/task/3858|containerd|47
+/proc/3858/task/3860|containerd|4996
+/proc/3858/task/3861|containerd|1998
+/proc/3858/task/3862|containerd|25
+/proc/3858/task/3863|containerd|1205
+/proc/3858/task/3864|containerd|15
+/proc/3858/task/3865|containerd|1
+/proc/3858/task/3866|containerd|1497
+/proc/3858/task/3867|containerd|930
+/proc/39/task/39|rcu_tasks_trace_kthread|2
+/proc/3909/task/3909|syslogd|32
+/proc/393/task/393|kworker/u17:0|2
+/proc/395/task/395|kworker/0:1H-kblockd|116
+/proc/4/task/4|kworker/R-rcu_gp|2
+/proc/40/task/40|kauditd|2
+/proc/4043/task/4043|sshd.pam|15
+/proc/41/task/41|khungtaskd|6
+/proc/4120/task/4120|getty|14
+/proc/4121/task/4121|getty|18
+/proc/4123/task/4123|getty|10
+/proc/4125/task/4125|getty|7
+/proc/4126/task/4126|getty|17
+/proc/4128/task/4128|getty|17
+/proc/4129/task/4129|getty|6
+/proc/4130/task/4130|getty|3
+/proc/42/task/42|oom_reaper|2
+/proc/4218/task/4218|sshd-session.pa|14
+/proc/4221/task/4221|sshd-session.pa|85
+/proc/43/task/43|kworker/R-writeback|2
+/proc/44/task/44|kcompactd0|1151
+/proc/448/task/448|kworker/2:2|3
+/proc/45/task/45|ksmd|2
+/proc/455/task/455|kworker/3:1H-kblockd|37
+/proc/46/task/46|khugepaged|92
+/proc/47/task/47|kworker/R-kblockd|2
+/proc/48/task/48|kworker/R-blkcg_punt_bio|2
+/proc/4842/task/4842|sudo|3
+/proc/4843/task/4843|sh|520
+/proc/49/task/49|kworker/R-kintegrityd|2
+/proc/5/task/5|kworker/R-sync_wq|2
+/proc/50/task/50|kworker/1:1-mm_percpu_wq|229
+/proc/51/task/51|kworker/2:1-events|477
+/proc/52/task/52|kworker/R-md_bitmap|2
+/proc/53/task/53|kworker/R-quota_events_unbound|2
+/proc/54/task/54|kworker/2:1H-kblockd|36
+/proc/55/task/55|kworker/u16:2-events_unbound|2052
+/proc/59/task/59|kworker/u16:3-events_unbound|27
+/proc/6/task/6|kworker/R-kvfree_rcu_reclaim|2
+/proc/7/task/7|kworker/R-slub_flushwq|2
+/proc/72/task/72|kswapd0|3
+/proc/734/task/734|kworker/0:2-events|1013
+/proc/75/task/75|kworker/R-kthrotld|2
+/proc/754/task/754|hwrng|22
+/proc/789/task/789|kworker/1:2-events|401
+/proc/8/task/8|kworker/R-netns|2

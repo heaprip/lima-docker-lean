@@ -1,0 +1,10 @@
+window 120s
+VZ pid=90430  cpu=1340ms  (1.116% of 1 core)
+hostagent pid=90424  cpu=50ms
+guest vda: read 0 B, write 0 B
+host footprint VZ: 6161 MB
+Mem:           5922         220        5533           1         168        5540
+dockerd 122060kB
+containerd 70068kB
+lima-guestagent 55212kB
+write in 180s: 0 B

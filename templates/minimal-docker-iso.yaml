@@ -1,0 +1,170 @@
+# Lean Docker host, immutable variant: Lima + Virtualization.framework + Alpine ISO.
+#
+#   limactl start --name=dev ./templates/minimal-docker-iso.yaml
+#   docker context create lima-dev --docker "host=unix://$HOME/.lima/dev/sock/docker.sock"
+#
+# The closest thing to Apple container's vminit that Lima supports out of the box.
+# The OS is a read-only ISO (alpine-lima "std", the image Rancher Desktop is built on);
+# the root file system lives in tmpfs and is rebuilt on every boot. There is no cloud-init
+# (python), a shell script called lima-init does its job.
+# Only the instance disk (/mnt/data) survives a reboot; Lima bind-mounts
+# /etc /home /root /tmp /usr/local /var/lib from it.
+#
+# Two consequences:
+#   * apk packages last until the next reboot, so Docker is installed from the static
+#     docker.com release into /usr/local/bin (survives reboots, no network needed at boot);
+#   * /var/log is already in RAM, no tmpfs workaround for the guestagent SyncTime log needed.
+#
+# Compose and buildx run on the host as docker CLI plugins; the guest only needs dockerd
+# (its built-in BuildKit, and the containerd it spawns itself).
+#
+# Why this is not the default: idle cost and throughput match the cloud-image template,
+# but the kernel command line is baked into the ISO, so init_on_free (which roughly halves
+# the host RAM the VM really holds after a load) cannot be enabled. See docs/en/analysis.md.
+#
+# Deliberately NOT disabled:
+#   acpid   — vz/limactl request a graceful shutdown through it. Without it
+#             `limactl stop` degrades to a hard kill -> dirty ext4 + fsck.
+#   mdev    — brings up the virtio devices (disk, network, virtiofs).
+
+minimumLimaVersion: 2.2.0
+
+# Lima 2.2's own `_images/alpine-iso` still points at v0.2.49 (3.23.0).
+images:
+- location: https://github.com/lima-vm/alpine-lima/releases/download/v0.2.50/alpine-lima-std-3.24.1-aarch64.iso
+  arch: aarch64
+  digest: sha512:fc90af52c78dcf15ac134beb146f7704cd00859412962081f7023b5bb49d4a887a08dfbf761b824a2375ed90a614f89c0b16b9da93e3bcc97e94e8ba52e21c09
+
+vmType: "vz"
+mountType: "virtiofs"
+rosetta:
+  enabled: true
+
+# An idle vCPU is a parked host thread and costs ~nothing; the count only affects build speed.
+# VZ never gives back guest memory that was touched once (lima-vm/lima#4220),
+# so `memory` is what the instance ends up holding.
+cpus: 4
+memory: 6GiB
+# For an ISO image this is the /mnt/data disk (a sparse file).
+disk: 40GiB
+
+containerd:
+  system: false
+  user: false
+
+# No mounts by default: add what you need with --mount.
+mounts: []
+
+provision:
+# mode: data runs before mode: system, so dockerd starts with this config already.
+# /etc lives on /mnt/data, the file survives reboots.
+- mode: data
+  path: /etc/docker/daemon.json
+  owner: "root:root"
+  permissions: "0644"
+  content: |
+    {
+      "log-driver": "json-file",
+      "log-opts": {
+        "max-size": "10m",
+        "max-file": "3"
+      },
+      "builder": {
+        "gc": {
+          "enabled": true,
+          "policy": [
+            { "reservedSpace": "2GB", "maxUsedSpace": "8GB" }
+          ]
+        }
+      }
+    }
+
+- mode: data
+  path: /etc/init.d/docker
+  owner: "root:root"
+  permissions: "0755"
+  content: |
+    #!/sbin/openrc-run
+    # dockerd from the static docker.com release in /usr/local/bin; it spawns containerd itself.
+    name="dockerd"
+    command="/usr/local/bin/dockerd"
+    supervisor="supervise-daemon"
+    output_log="/var/log/docker.log"
+    error_log="/var/log/docker.log"
+    # Prepend, never replace: OpenRC's helpers live in /usr/libexec/rc/bin on PATH.
+    export PATH="/usr/local/bin:${PATH}"
+
+    depend() {
+      need net
+      after firewall
+    }
+
+    start_pre() {
+      mountpoint -q /sys/fs/cgroup || mount -t cgroup2 none /sys/fs/cgroup
+      ulimit -n 1048576
+    }
+
+- mode: system
+  script: |
+    #!/bin/sh
+    set -eu
+    # Bump the version here; afterwards: `limactl shell NAME sudo rm /usr/local/bin/dockerd`
+    # and restart the instance.
+    DOCKER_VERSION=29.8.1
+    if [ "$(/usr/local/bin/dockerd --version 2>/dev/null | awk '{print $3}' | tr -d ,)" != "$DOCKER_VERSION" ]; then
+      wget -qO- "https://download.docker.com/linux/static/stable/aarch64/docker-${DOCKER_VERSION}.tgz" \
+        | tar -xz -C /usr/local/bin --strip-components=1
+    fi
+    addgroup -S docker 2>/dev/null || true
+    addgroup "{{.User}}" docker 2>/dev/null || true
+    rc-update add docker default
+    rc-service docker status >/dev/null 2>&1 || rc-service docker start
+
+- mode: system
+  script: |
+    #!/bin/sh
+    # Kill the constant background activity.
+    # chronyd — Lima syncs the clock itself (TimeSync every 10 s); the NTP daemon only
+    #           bounces UDP through the hostagent proxy.
+    # crond   — in the std image it only exists for logrotate and wakes the guest every minute.
+    for s in chronyd crond; do
+      rc-service "$s" stop 2>/dev/null || true
+      rc-update del "$s" boot 2>/dev/null || true
+      rc-update del "$s" default 2>/dev/null || true
+    done
+    # Disabling syslogd is pointless: `use logger` in sshd brings it back when Lima restarts
+    # sshd at the end of boot. Instead of /var/log/messages (tmpfs = RAM, never rotated)
+    # use a fixed-size ring buffer; read it with `logread`.
+    if ! grep -q -- '-C' /etc/conf.d/syslog; then
+      echo 'SYSLOGD_OPTS="-t -C64"' > /etc/conf.d/syslog
+      rc-service syslog restart 2>/dev/null || true
+      rm -f /var/log/messages
+    fi
+    # /mnt/data is the only on-disk file system; commit the journal every 60 s.
+    # Its bind mounts (/etc, /var/lib, ...) keep their own flags, so set noatime on each.
+    mount -o remount,noatime,commit=60 /mnt/data
+    awk '{for (i = 7; $i != "-"; i++); if ($(i+2) == "/dev/vda1" && $5 != "/mnt/data") print $5}' /proc/self/mountinfo \
+      | while read -r m; do mount -o remount,bind,noatime "$m"; done
+    # The instance disk is a sparse file: space freed inside the guest goes back
+    # to the host only after a discard.
+    fstrim -a 2>/dev/null || true
+
+probes:
+- script: |
+    #!/bin/sh
+    set -eu
+    command -v docker >/dev/null
+    docker info >/dev/null
+  hint: dockerd did not come up, see /var/log/docker.log and /var/log/lima-init.log in the guest
+
+hostResolver:
+  hosts:
+    host.docker.internal: host.lima.internal
+
+portForwards:
+- guestSocket: "/var/run/docker.sock"
+  hostSocket: "{{.Dir}}/sock/docker.sock"
+
+message: |
+  docker context create lima-{{.Name}} --docker "host=unix://{{.Dir}}/sock/docker.sock"
+  docker context use lima-{{.Name}}

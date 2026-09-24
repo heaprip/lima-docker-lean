@@ -1,0 +1,14 @@
+window 120s
+VZ pid=81763  cpu=1570ms  (1.308% of 1 core)
+hostagent pid=81757  cpu=50ms
+top: 81763  com.apple.Virtua 1.3  17972+ 4.6  
+top: 81757  limactl          0.0  1248+  0.3  
+guest vda: read 0 B, write 86016 B
+host footprint VZ: 807 MB  rss=1199MB
+host rss hostagent: 89MB
+Mem:           5922         148        5406           0         367        5631
+rootfs used 495MB (/dev/vda2)
+dockerd 85240kB
+containerd 46748kB
+lima-guestagent 40680kB
+syslogd 972kB

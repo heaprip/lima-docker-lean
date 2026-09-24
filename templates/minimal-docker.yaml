@@ -1,0 +1,177 @@
+# Lean Docker host for macOS: Lima + Virtualization.framework + Alpine (cloud image) + Docker.
+#
+#   limactl start --name=dev ./templates/minimal-docker.yaml
+#   limactl restart dev          # once: activates init_on_free (see below)
+#   docker context create lima-dev --docker "host=unix://$HOME/.lima/dev/sock/docker.sock"
+#   docker context use lima-dev
+#
+# Every tweak below was measured on an Apple M5 / macOS 26.6 / Lima 2.2.0 (2026-09);
+# see docs/en/analysis.md for the numbers and how they were taken.
+# An immutable-ISO alternative lives in minimal-docker-iso.yaml: equally quiet when idle,
+# but its kernel command line is baked into the ISO, so init_on_free is not available.
+#
+# Deliberately NOT disabled (contrary to popular "minimal VM" guides):
+#   acpid          — vz/limactl request a graceful shutdown through it. Without it
+#                    `limactl stop` degrades to a hard kill -> dirty ext4 + fsck.
+#   mdev/hwdrivers — they bring up the virtio devices (disk, network, virtiofs).
+
+minimumLimaVersion: 2.2.0
+
+base:
+- template:_images/alpine-3.23
+
+vmType: "vz"
+mountType: "virtiofs"
+rosetta:
+  enabled: true
+
+# An idle vCPU is a parked host thread and costs ~nothing; the count only affects build speed.
+cpus: 4
+# VZ never gives back guest memory that was touched once (lima-vm/lima#4220): after a pgbench
+# run the VM holds all 6 GiB. Only the macOS compressor can take it back, under memory
+# pressure, and that is what init_on_free + cache-trim (below) are for: the real host cost
+# after a load drops from ~4.2 GB to ~2.1 GB.
+memory: 6GiB
+disk: 40GiB
+
+# Lima's built-in containerd/nerdctl is not needed, the runtime here is Docker.
+containerd:
+  system: false
+  user: false
+
+# No mounts by default: add what you need with --mount.
+mounts: []
+
+provision:
+# --- The only disk writer when idle ---
+# lima-guestagent logs "SyncTime: system time synchronized with host (drift was 377.9ms)"
+# to /var/log/lima-guestagent.log every 10 s. The drift never converges and this cannot be
+# configured off. ~600 B/min on their own are harmless, but the ext4 journal amplifies them
+# to ~25 KB/min of block writes.
+#
+# mode: boot runs from cloud-init bootcmd in the OpenRC "boot" runlevel, i.e. BEFORE the
+# guestagent starts in "default" and opens its log. Any later and the daemon would keep
+# writing to the old inode on disk.
+#
+# Measured: 0 bytes written in 180 s of idle. The price: guest logs live in RAM and are lost
+# on reboot, and up to 60 s of unflushed data on a crash.
+- mode: boot
+  script: |
+    mount -t tmpfs -o noatime,size=64M tmpfs /var/log
+    mount -o remount,commit=60 /
+
+# Bounds for what actually grows unattended: container logs and the BuildKit cache.
+# mode: data runs before mode: system, so dockerd starts with this config already.
+- mode: data
+  path: /etc/docker/daemon.json
+  owner: "root:root"
+  permissions: "0644"
+  content: |
+    {
+      "log-driver": "json-file",
+      "log-opts": {
+        "max-size": "10m",
+        "max-file": "3"
+      },
+      "builder": {
+        "gc": {
+          "enabled": true,
+          "policy": [
+            { "reservedSpace": "2GB", "maxUsedSpace": "8GB" }
+          ]
+        }
+      }
+    }
+
+# With init_on_free=1 the kernel zeroes every page it frees, and the macOS compressor stores
+# single-value pages for next to nothing. But page cache is not free memory: until it is
+# dropped it holds data. Every 10 minutes, and only when the guest is idle (load1 < 0.2),
+# drop the clean page cache. Measured after pgbench + FDB: 4.3 GB of VM pages compressed
+# into ~240 MB (without init_on_free: 5 GB -> 3 GB). No effect on pgbench/FDB throughput.
+- mode: data
+  path: /etc/init.d/cache-trim
+  owner: "root:root"
+  permissions: "0755"
+  content: |
+    #!/sbin/openrc-run
+    description="Drop clean page cache when idle, so init_on_free hands zero pages to macOS"
+    command="/bin/sh"
+    command_args="-c 'while sleep 600; do read -r l _ < /proc/loadavg; case \$l in 0.0*|0.1*) echo 1 > /proc/sys/vm/drop_caches;; esac; done'"
+    supervisor="supervise-daemon"
+
+- mode: system
+  script: |
+    #!/bin/sh
+    set -eu
+    command -v docker >/dev/null 2>&1 || apk add --no-cache docker docker-cli-compose
+    addgroup "{{.User}}" docker 2>/dev/null || true
+    rc-update add docker default
+    rc-service docker status >/dev/null 2>&1 || rc-service docker start
+    rc-update add cache-trim default
+    rc-service cache-trim status >/dev/null 2>&1 || rc-service cache-trim start
+
+- mode: system
+  script: |
+    #!/bin/sh
+    # Kernel: init_on_free=1 (see cache-trim) and GRUB_TIMEOUT=0 — the stock image waits
+    # 10 s in the grub menu on every boot. Takes effect on the next boot, hence the one
+    # `limactl restart` after the first `limactl start`.
+    if ! grep -q init_on_free /etc/default/grub; then
+      sed -i -e 's/^GRUB_TIMEOUT=.*/GRUB_TIMEOUT=0/' \
+             -e 's/^\(GRUB_CMDLINE_LINUX_DEFAULT="[^"]*\)"/\1 init_on_free=1"/' /etc/default/grub
+      grub-mkconfig -o /boot/grub/grub.cfg >/dev/null 2>&1
+    fi
+
+- mode: system
+  script: |
+    #!/bin/sh
+    # Kill the constant background activity (together: 1.27% -> 1.00% of a host core).
+    # getty on ttyAMA0 — listed in the image's inittab, but VZ has no such device, so
+    #           busybox init respawns it forever. The largest single drop we measured.
+    if grep -q '^ttyAMA0::' /etc/inittab; then
+      sed -i 's/^ttyAMA0::/#ttyAMA0::/' /etc/inittab
+      kill -HUP 1
+    fi
+    # cloud-init-hotplugd — cloud-init device hotplug, Lima does not use it.
+    # chronyd — Lima syncs the clock itself (TimeSync every 10 s); the NTP daemon only
+    #           bounces UDP through the hostagent proxy.
+    for s in cloud-init-hotplugd chronyd; do
+      rc-service "$s" stop 2>/dev/null || true
+      rc-update del "$s" default 2>/dev/null || true
+    done
+    # Disabling syslogd is pointless: `use logger` in sshd brings it back when Lima restarts
+    # sshd at the end of boot. Instead of a file in /var/log (tmpfs = RAM, never rotated)
+    # use a fixed-size ring buffer; read it with `logread`.
+    if ! grep -q -- '-C' /etc/conf.d/syslog; then
+      echo 'SYSLOGD_OPTS="-t -C64"' > /etc/conf.d/syslog
+      rc-service syslog restart 2>/dev/null || true
+      rm -f /var/log/messages
+    fi
+
+- mode: system
+  script: |
+    #!/bin/sh
+    # The instance disk is a sparse file: space freed inside the guest goes back
+    # to the host only after a discard.
+    fstrim -a 2>/dev/null || true
+
+probes:
+- script: |
+    #!/bin/sh
+    set -eu
+    command -v docker >/dev/null
+    docker info >/dev/null
+  hint: dockerd did not come up, see /var/log/cloud-init-output.log in the guest
+
+hostResolver:
+  hosts:
+    host.docker.internal: host.lima.internal
+
+portForwards:
+- guestSocket: "/var/run/docker.sock"
+  hostSocket: "{{.Dir}}/sock/docker.sock"
+
+message: |
+  Restart the instance once to activate init_on_free: limactl restart {{.Name}}
+  docker context create lima-{{.Name}} --docker "host=unix://{{.Dir}}/sock/docker.sock"
+  docker context use lima-{{.Name}}

@@ -1,0 +1,35 @@
+===== dev  22:20:07
+host VZ footprint: 6160 MB
+Database created
+--- idle with fdb+pg running (settle 60s, measure 120s)
+window 120s
+VZ pid=90430  cpu=4520ms  (3.766% of 1 core)
+top: 90430  com.apple.Virtua 3.7  62912+ 11.6 
+top: 90424  limactl          0.0  20652+ 0.1  
+guest vda: read 0 B, write 3933184 B
+host footprint VZ: 6160 MB  rss=9030MB
+Mem:           5922         317        2485          16        3119        5398
+dockerd 91076kB
+containerd 66448kB
+lima-guestagent 46988kB
+pg cpu=0.00% mem=27.55MiB / 5.783GiB
+fdb cpu=1.41% mem=56.05MiB / 5.783GiB
+--- postgres pgbench
+done in 2.46 s (drop tables 0.00 s, create tables 0.00 s, client-side generate 1.65 s, vacuum 0.10 s, primary keys 0.71 s).
+number of failed transactions: 0 (0.000%)
+latency average = 0.552 ms
+tps = 14497.493136 (without initial connection time)
+latency average = 0.300 ms
+tps = 3331.423986 (without initial connection time)
+--- foundationdb
+fdb write: 400000 keys x 100B in 1.6s = 253,441 keys/s (8 threads, 500/txn)
+fdb single-key commit latency: p50=1.07ms p99=1.61ms
+fdb range read: 400000 keys in 0.75s = 534,534 keys/s
+host VZ footprint: 6161 MB
+--- idle after load (settle 60s, measure 60s)
+VZ pid=90430  cpu=2490ms  (4.150% of 1 core)
+top: 90430  com.apple.Virtua 4.1  89079+ 12.0 
+top: 90424  limactl          0.0  21240+ 0.2  
+guest vda: read 12288 B, write 1446912 B
+host footprint VZ: 6161 MB  rss=4536MB
+Mem:           5922         662         232         142        5028        4928

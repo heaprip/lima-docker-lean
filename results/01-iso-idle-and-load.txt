@@ -1,0 +1,65 @@
+===== dev  21:35:05
+host VZ footprint: 3288 MB
+Database created
+--- idle with fdb+pg running (settle 60s, measure 120s)
+window 120s
+VZ pid=79180  cpu=4650ms  (3.875% of 1 core)
+hostagent pid=79147  cpu=50ms
+top: 79180  com.apple.Virtua 3.8  52242+ 11.2 
+top: 79147  limactl          0.0  19044+ 0.1  
+guest vda: read 0 B, write 5210112 B
+host footprint VZ: 3429 MB  rss=5311MB
+host rss hostagent: 128MB
+Mem:           5922         278        2787          91        2856        5362
+rootfs used 76MB (tmpfs)
+dockerd 88184kB
+containerd 58308kB
+lima-guestagent 42936kB
+syslogd 976kB
+pg cpu=0.00% mem=31.27MiB / 5.783GiB
+fdb cpu=1.46% mem=55.52MiB / 5.783GiB
+--- postgres pgbench
+done in 2.44 s (drop tables 0.00 s, create tables 0.00 s, client-side generate 1.61 s, vacuum 0.13 s, primary keys 0.70 s).
+number of failed transactions: 0 (0.000%)
+latency average = 0.516 ms
+tps = 15495.488589 (without initial connection time)
+latency average = 0.290 ms
+tps = 3449.254354 (without initial connection time)
+--- foundationdb
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/site-packages/fdb/impl.py", line 1515, in <module>
+    _capi = ctypes.CDLL(capi_name)
+  File "/usr/lib64/python3.9/ctypes/__init__.py", line 374, in __init__
+    self._handle = _dlopen(self._name, mode)
+OSError: libfdb_c.so: cannot open shared object file: No such file or directory
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib64/python3.9/site-packages/fdb/impl.py", line 1522, in <module>
+    _capi = ctypes.CDLL(lib_path)
+  File "/usr/lib64/python3.9/ctypes/__init__.py", line 374, in __init__
+    self._handle = _dlopen(self._name, mode)
+OSError: libfdb_c.so: cannot open shared object file: No such file or directory
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/fdbbench.py", line 2, in <module>
+    fdb.api_version(730)
+  File "/usr/lib64/python3.9/site-packages/fdb/__init__.py", line 72, in api_version
+    import fdb.impl
+  File "/usr/lib64/python3.9/site-packages/fdb/impl.py", line 1524, in <module>
+    raise Exception("Unable to locate the FoundationDB API shared library!")
+Exception: Unable to locate the FoundationDB API shared library!
+host VZ footprint: 5513 MB
+--- idle after load (settle 60s, measure 60s)
+VZ pid=79180  cpu=2290ms  (3.816% of 1 core)
+top: 79180  com.apple.Virtua 3.8  75950+ 12.2 
+top: 79147  limactl          0.0  19564+ 0.2  
+guest vda: read 0 B, write 1818624 B
+host footprint VZ: 5515 MB  rss=7548MB
+Mem:           5922         296         804         217        4822        5218
+fdb write: 400000 keys x 100B in 1.6s = 245,292 keys/s (8 threads, 500/txn)
+fdb single-key commit latency: p50=1.06ms p99=1.26ms
+fdb range read: 400000 keys in 0.67s = 593,412 keys/s

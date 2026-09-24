@@ -1,0 +1,7 @@
+tps = 15713.398858 (without initial connection time)
+fdb write: 400000 keys x 100B in 1.7s = 241,838 keys/s (8 threads, 500/txn)
+after load: footprint=6159MB
+Mem:           5922         514        5049         141         359        5122
+vmmap: Writable regions: Total=6.1G written=11.9M(0%) resident=6.0G(98%) swapped_out=4.1G(67%) unallocated=16777216.0T(281556975616%)
+running: free=5991 compressor_occ=1907 stored=10402 MB
+stopped: free=8045 compressor_occ=1669 stored=6075 MB
