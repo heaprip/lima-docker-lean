@@ -1,11 +1,10 @@
 # GitHub Pages (Jekyll): renders README.md as the landing page and adds SEO meta tags
 # (title, description, canonical URL, Open Graph, Twitter card, JSON-LD) via jekyll-seo-tag.
-title: "lima-docker-lean: Docker on macOS with near-zero idle cost"
+title: lima-docker-lean
+tagline: Docker on macOS with near-zero idle cost
 description: >-
-  Measured, minimal Docker host for Apple Silicon Macs on Lima and Virtualization.framework:
-  0 idle disk writes, ~1% of a core idle, about half the RAM held after load thanks to
-  init_on_free. Real Docker Engine API for testcontainers, compose and werf.
-  Compared with Apple container, OrbStack, Colima, Podman, LinuxKit. EN/RU.
+  Measured Lima template for Docker on Apple Silicon Macs: 0 idle disk writes, ~1% idle CPU,
+  half the RAM held after load. Compared with OrbStack, Apple container, Colima.
 url: "https://heaprip.github.io"
 baseurl: "/lima-docker-lean"
 lang: en
@@ -14,7 +13,13 @@ github:
   repository_url: "https://github.com/heaprip/lima-docker-lean"
 twitter:
   card: summary
+defaults:
+  - scope: {path: "README.ru.md"}
+    values: {lang: ru, description: "Замеренный шаблон Lima для Docker на Mac с Apple Silicon: 0 записи на диск и ~1% CPU в простое, вдвое меньше RAM после нагрузки."}
+  - scope: {path: "docs/ru"}
+    values: {lang: ru}
 plugins:
+  - jekyll-titles-from-headings
   - jekyll-seo-tag
   - jekyll-relative-links
   - jekyll-sitemap
